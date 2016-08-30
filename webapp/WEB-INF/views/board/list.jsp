@@ -13,7 +13,7 @@
 <head>
 <title>mysite</title>
 <meta http-equiv="content-type" content="text/html; charset=utf-8">
-<link href="/mysite/assets/css/board.css" rel="stylesheet"
+<link href="/mysite4/assets/css/board.css" rel="stylesheet"
 	type="text/css">
 </head>
 <body>
@@ -63,19 +63,19 @@
 				<div class="pager">
 					<ul>
 						<c:if test='${prePage}'>
-						<li><a href="/mysite/bs?a=list&no=${sPage-1 }&kwd=${kwd}">◀</a></li>
+						<li><a href="/mysite/bs?a=list&pageNo=${sPage-1 }&kwd=${kwd}">◀</a></li>
 						</c:if>
 						
 							<c:forEach begin='${sPage }' end='${ePage }' step='1' var='i' >
-								<c:if test='${ param.no==i }'>
+								<c:if test='${ param.pageNo==i }'>
 								<li class="selected">${i }</li>
 								</c:if>
-								<c:if test='${param.no != i }'>
-								<li><a href="/mysite/bs?a=list&no=${i }&kwd=${kwd}">${i }</a></li>
+								<c:if test='${param.pageNo != i }'>
+								<li><a href="/mysite/bs?a=list&pageNo=${i }&kwd=${kwd}">${i }</a></li>
 								</c:if>
 							</c:forEach>		
 						<c:if test='${nextPage}'>
-						<li><a href="/mysite/bs?a=list&no=${ePage+1 }&kwd=${kwd}">▶</a></li>
+						<li><a href="/mysite/bs?a=list&pageNo=${ePage+1 }&kwd=${kwd}">▶</a></li>
 						</c:if>
 					</ul>
 				</div>

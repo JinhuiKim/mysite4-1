@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="user">
+	<select id="getByEmailAndPassword" parameterType="uservo"
+		resultType="uservo">
+	<![CDATA[
+		select no, name from users where email=#{email } and password=#{password }
+	]]><!-- 칼럼 이름이 어렵다하면  	select n as no, name from users where...-->
+	</select>
+
+	<update id="update" parameterType="uservo">
+		<choose>
+			<when test="#{password==''}">
+			<![CDATA[
+			update users set name= #{name }, gender=#{gender } where no = #{no }
+			]]>
+			</when>
+			<otherwise>
+			<![CDATA[
+			 update users set name= #{name }, password=#{password}, gender=#{gender } where no =#{no }
+			]]> 
+			</otherwise>
+		</choose>
+	</update>
+
+	<insert id="insert" parameterType="uservo" >
+	<![CDATA[
+		insert into Users values(seq_Users.nextval, #{name }, #{email }, #{gender }, #{password })
+
+	]]>
+	</insert>
+
+	<select id="getByEmail" parameterType="String" resultType="uservo">
+	<![CDATA[
+		select no, name, email from users where email=#{email }
+		
+	]]>
+	</select>
+
+	<select id="getByNo" parameterType="Long" resultType="uservo">
+	<![CDATA[
+		select no, name, gender from users where no= #{no }
+	]]>
+	</select>
+	
+	
+	<delete id="delete" parameterType="uservo">
+	<![CDATA[
+	 delete from User where no =#{no } and password = #{password }
+	]]>
+	</delete>
+</mapper>

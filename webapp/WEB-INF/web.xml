@@ -19,6 +19,7 @@
 		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class><!-- business 객체를 넣을수있는 root  application container -->
 	</listener>
 	<!-- DispatchServlet Mapping : fron controller 등록 -->
+	
 	<servlet>
 		<servlet-name>spring</servlet-name>
 		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>

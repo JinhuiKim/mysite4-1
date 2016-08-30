@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="board">
+	<select id="getNo" parameterType="Long" resultType="boardvo">
+	<![CDATA[
+		select no, title, content, view_count, user_no, group_no, order_no, depth 
+		from board where no=#{no }
+	]]>
+	</select>
+	
+	
+	<update id="viewcount" parameterType="baordvo">
+	<![CDATA[
+	update BOARD set view_count =#{viewNo} where no=#{no }
+	]]>
+	</update>
+	
+	<delete id="delete" parameterType="boardvo">
+	<![CDATA[
+		delete from board where no =#{no }
+	]]>
+	</delete>
+	
+	<update id="modify" parameterType="boardvo">
+	<![CDATA[
+	update BOARD set title =#{title }, content=#{content } where no=#{no }
+		]]>
+	</update>
+	
+</mapper>

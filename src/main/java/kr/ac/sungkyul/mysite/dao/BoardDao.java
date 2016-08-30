@@ -9,77 +9,21 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.ibatis.session.SqlSession;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import kr.ac.sungkyul.mysite.vo.BoardVo;
 @Repository
 public class BoardDao {
 	
-	public BoardVo get(Long vno) {
-		BoardVo vo = null;
-		Connection connection = null;
-		PreparedStatement pstmt = null;
-		ResultSet rs = null;
-		
-		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			String url = "jdbc:oracle:thin:@localhost:1521:xe";
-			connection = DriverManager.getConnection(url, "webdb", "webdb");
-			
-
-			String sql = "select no, title, content, view_count, user_no, group_no, order_no, depth from board where no=? ";
-			pstmt = connection.prepareStatement(sql);
-
-			pstmt.setLong(1, vno);
-			
-			rs= pstmt.executeQuery();
-			
-			if(rs.next()){
-				Long no = rs.getLong(1);
-				String title =rs.getString(2);
-				String content =rs.getString(3);
-				Long viewNo = rs.getLong(4);
-				Long userNo = rs.getLong(5);
-				Long groupNo = rs.getLong(6);
-				Long orderNo = rs.getLong(7);
-				Long depth = rs.getLong(8);
-				
-			vo= new BoardVo();
-			vo.setNo(no);
-			vo.setTitle(title);
-			vo.setContent(content);
-			vo.setViewNo(viewNo);
-			vo.setUserNo(userNo);
-			vo.setGroupNo(groupNo);
-			vo.setOrderNo(orderNo);
-			vo.setDepth(depth);
-			
-			
-			
-			}
-			
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} finally {
-			try {
-				if(rs!=null){
-					rs.close();
-				}
-				if (pstmt != null) {
-					pstmt.close();
-				}
-				if (connection != null) {
-
-					connection.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		return vo;
+	@Autowired
+	private SqlSession sqlSession;
+	
+	public BoardVo get(Long no) {
+	
+		BoardVo vo = sqlSession.selectOne("board.getNo",no);
+			return vo;
 	}
 	
 	public List<BoardVo> getAll(String kwd) {
@@ -144,48 +88,8 @@ public class BoardDao {
 	
 	
 	
-	public boolean viewcount(BoardVo vo) {
-		Connection connection =null;
-		PreparedStatement pstmt = null;
-		int count = 0;
-		try{
-		Class.forName("oracle.jdbc.driver.OracleDriver");
-		String url = "jdbc:oracle:thin:@localhost:1521:xe";
-		connection = DriverManager.getConnection(url, "webdb", "webdb");
-		
-		
-		
-		String sql = "update BOARD set view_count =? where no=?";
-			pstmt= connection.prepareStatement(sql);
-			
-		Long vcount = vo.getViewNo()+1;
-		pstmt.setLong(1, vcount);
-		pstmt.setLong(2, vo.getNo());
-		
-		count = pstmt.executeUpdate();
-		
-		
-		}catch (SQLException e) {
-
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				
-				if (pstmt != null) {
-
-					pstmt.close();
-				}
-				if(connection != null){
-					connection.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-
-		return (count==1);
+	public void viewcount(BoardVo vo) {
+		sqlSession.update("board.viewcount", vo);
 	
 	}
 	public List<BoardVo> getList(Long pageNo, String kwd) {
@@ -271,45 +175,10 @@ public class BoardDao {
 
 	}
 	
-	public boolean delete(BoardVo vo) {
-		Connection connection = null;
-		PreparedStatement pstmt = null;
-		int count= 0;
-		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver");
-			String url = "jdbc:oracle:thin:@localhost:1521:xe";
-			connection = DriverManager.getConnection(url, "webdb", "webdb");
-			String sql ="delete from board where no =?";
-			pstmt = connection.prepareStatement(sql);
-			
-			pstmt.setLong(1, vo.getNo());
-			
-			count = pstmt.executeUpdate();
-
-		
-		} catch (SQLException e) {
-
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				
-				if (pstmt != null) {
-
-					pstmt.close();
-				}
-				if(connection != null){
-					connection.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-
-		return (count==1);
-
+	public void delete(BoardVo vo) {
+	sqlSession.delete("board.delete",vo);
 	}
+	
 	public boolean write(BoardVo vo) {
 		Connection connection = null;
 		PreparedStatement pstmt = null;
@@ -388,49 +257,7 @@ public class BoardDao {
 
 	}
 	
-	public boolean  modify(BoardVo vo) {
-		Connection connection =null;
-		PreparedStatement pstmt = null;
-		int count=0;
-		try{
-		Class.forName("oracle.jdbc.driver.OracleDriver");
-		String url = "jdbc:oracle:thin:@localhost:1521:xe";
-		connection = DriverManager.getConnection(url, "webdb", "webdb");
-		
-		
-		
-		String sql = "update BOARD set title =?, content=? where no=?";
-		
-		pstmt= connection.prepareStatement(sql);
-		
-		pstmt.setString(1, vo.getTitle());
-		pstmt.setString(2, vo.getContent());
-		pstmt.setLong(3, vo.getNo());
-		
-		count = pstmt.executeUpdate();
-		
-		
-		}catch (SQLException e) {
-
-			e.printStackTrace();
-		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
-		} finally {
-			try {
-				
-				if (pstmt != null) {
-
-					pstmt.close();
-				}
-				if(connection != null){
-					connection.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-
-		return (count==1);
-	
+	public void modify(BoardVo vo) {
+		sqlSession.update("board.modify",vo);
 	}
 }
